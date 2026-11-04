@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Авто Премиум — концепт первого экрана</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"AutoRepair","name":"Авто Премиум","url":"https://autoservice-ap.ru/","telephone":"+7 (812) 326-18-07","foundingDate":"1993",
+ "openingHours":"Mo-Su 09:00-21:00",
+ "department":[
+  {"@type":"AutoRepair","name":"СТО на Энгельса","telephone":"+7 (812) 326-18-07","address":{"@type":"PostalAddress","addressLocality":"Санкт-Петербург","streetAddress":"пр. Энгельса, 33/1"}},
+  {"@type":"AutoRepair","name":"СТО на Хасанской","telephone":"+7 (812) 325-40-42","address":{"@type":"PostalAddress","addressLocality":"Санкт-Петербург","streetAddress":"ул. Хасанская, 5"}},
+  {"@type":"AutoRepair","name":"СТО на Руставели","telephone":"+7 (812) 372-56-67","address":{"@type":"PostalAddress","addressLocality":"Санкт-Петербург","streetAddress":"ул. Руставели, 25 к. 2"}}
+ ]}
+</script>
+<style type="text/tailwindcss">
+@theme {
+  --font-display: "Unbounded", system-ui, sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --color-ink: #0a0b0d;
+  --color-deep: #15171b;
+  --color-bone: #f2f0ec;
+  --color-sig: #ff4d2e;
+  --color-steel: #9aa3ad;
+}
+</style>
+<style>
+  html,body{background:#0a0b0d;color:#f2f0ec}
+  body{font-family:"Manrope",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  /* Фон: «асфальт ночью» — сетка-пол, свет фар, полосы скорости */
+  .floor{position:absolute;left:-50%;right:-50%;bottom:-10%;height:62%;transform:perspective(600px) rotateX(62deg);transform-origin:50% 100%;
+    background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:64px 64px;
+    -webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%)}
+  .glow{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
+  .streak{position:absolute;height:1px;width:38vw;left:-40vw;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);opacity:.35}
+  .grain{position:absolute;inset:0;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .line{display:block;overflow:hidden;padding-bottom:.08em}
+  .line>span{display:inline-block;transform:translateY(110%)}
+  .glass{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .tag{position:absolute;left:0;top:0;opacity:0;pointer-events:none;white-space:nowrap}
+  .tag::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff4d2e;margin-right:8px;box-shadow:0 0 0 4px rgba(255,77,46,.2);vertical-align:middle}
+  #fallback{display:none}
+  .no3d #fallback{display:flex}
+  /* Версия для слабовидящих */
+  .a11y body,.a11y{background:#000!important}
+  .a11y .glow,.a11y .grain,.a11y .floor,.a11y .streak,.a11y #stage,.a11y #tags{display:none!important}
+  .a11y #fallback{display:none!important}
+  .a11y *{color:#fff!important;font-size:1.08em;letter-spacing:.01em}
+  .a11y .btn-main{background:#fff!important;color:#000!important}
+  .a11y .btn-main *{color:#000!important}
+  @media (prefers-reduced-motion: reduce){.streak{display:none}}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #ff4d2e;outline-offset:3px}
+  select option{background:#15171b}
+</style>
+</head>
+<body>
+<div id="hero" class="relative min-h-[100svh] overflow-hidden">
+  <div aria-hidden="true" class="absolute inset-0">
+    <div class="glow" id="g1" style="width:48vmax;height:48vmax;right:-12vmax;top:-10vmax;background:radial-gradient(circle,rgba(255,77,46,.32),transparent 70%)"></div>
+    <div class="glow" id="g2" style="width:44vmax;height:44vmax;left:-16vmax;bottom:-20vmax;background:radial-gradient(circle,rgba(120,140,170,.22),transparent 70%)"></div>
+    <div class="floor"></div>
+    <div class="streak" style="top:22%"></div><div class="streak" style="top:47%"></div><div class="streak" style="top:71%"></div><div class="streak" style="top:86%"></div>
+    <div class="grain"></div>
+  </div>
+
+  <!-- Шапка -->
+  <header class="relative z-20 mx-auto flex max-w-[1360px] items-center justify-between gap-6 px-5 pt-[max(1.25rem,env(safe-area-inset-top))] md:px-10 md:pt-7">
+    <a href="#" class="reveal flex items-center gap-3" aria-label="Авто Премиум — главная">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-sig font-display text-[15px] font-bold text-ink">АП</span>
+      <span class="leading-tight"><span class="block font-display text-[17px] font-semibold tracking-wide">Авто Премиум</span><span class="block text-[11px] uppercase tracking-[.22em] text-bone/50">мультибрендовый сервис</span></span>
+    </a>
+    <nav class="reveal hidden items-center gap-8 text-sm text-bone/70 lg:flex" aria-label="Основное меню">
+      <a href="#" class="hover:text-bone">Услуги и цены</a><a href="#" class="hover:text-bone">Акции</a><a href="#" class="hover:text-bone">Запчасти</a><a href="#" class="hover:text-bone">Наши СТО</a><a href="#" class="hover:text-bone">Контакты</a>
+    </nav>
+    <div class="reveal flex items-center gap-3">
+      <div class="hidden text-right text-[13px] leading-5 xl:block">
+        <span class="block text-bone/45">Ежедневно 09:00–21:00</span>
+        <a href="tel:+78123261807" class="block text-[15px] font-semibold hover:text-sig">+7 (812) 326-18-07</a>
+      </div>
+      <button id="a11yBtn" class="glass grid h-10 w-10 place-items-center rounded-full" aria-label="Версия для слабовидящих" title="Версия для слабовидящих"><i data-lucide="eye" class="h-4 w-4"></i></button>
+      <button data-open class="btn-main hidden rounded-full bg-sig px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-bone md:block">Записаться</button>
+    </div>
+  </header>
+
+  <main class="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-center px-5 pb-28 md:px-10 lg:min-h-[calc(100svh-90px)] lg:grid-cols-[1.05fr_1fr] lg:pb-10">
+    <!-- 3D-сцена (на телефоне — над текстом) -->
+    <div class="relative order-1 h-[40svh] min-h-[250px] lg:order-2 lg:h-[78svh]">
+      <canvas id="stage" class="absolute inset-0 h-full w-full" aria-label="3D-модель тормозного узла: диск, суппорт и колодки"></canvas>
+      <div id="tags" aria-hidden="true">
+        <div class="tag glass rounded-full px-3 py-1.5 text-[12px]" data-k="cal">Суппорт</div>
+        <div class="tag glass rounded-full px-3 py-1.5 text-[12px]" data-k="pad">Тормозные колодки</div>
+        <div class="tag glass rounded-full px-3 py-1.5 text-[12px]" data-k="disc">Тормозной диск</div>
+      </div>
+      <div id="fallback" class="absolute inset-0 items-center justify-center">
+        <svg viewBox="0 0 240 240" class="h-3/4" aria-hidden="true">
+          <defs><radialGradient id="d"><stop offset=".3" stop-color="#3a3f46"/><stop offset=".8" stop-color="#b9c0c8"/><stop offset="1" stop-color="#6b727a"/></radialGradient></defs>
+          <circle cx="120" cy="120" r="100" fill="url(#d)"/><circle cx="120" cy="120" r="44" fill="#22262b"/>
+          <g fill="#22262b"><circle cx="120" cy="40" r="4"/><circle cx="200" cy="120" r="4"/><circle cx="120" cy="200" r="4"/><circle cx="40" cy="120" r="4"/><circle cx="177" cy="63" r="4"/><circle cx="63" cy="177" r="4"/></g>
+          <path d="M150 22 A104 104 0 0 1 218 90 L190 102 A74 74 0 0 0 140 50Z" fill="#ff4d2e"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Текст -->
+    <section class="order-2 lg:order-1 lg:pr-6">
+      <p class="reveal mb-5 inline-flex items-center gap-2 rounded-full border border-sig/40 px-4 py-1.5 text-[12px] uppercase tracking-[.18em] text-sig">
+        <span class="h-1.5 w-1.5 rounded-full bg-sig"></span> Санкт‑Петербург · с 1993 года
+      </p>
+      <h1 class="font-display text-[26px] font-semibold uppercase leading-[1.04] tracking-[-.01em] whitespace-nowrap sm:text-[42px] xl:text-[54px]">
+        <span class="line"><span>Сервис любых марок</span></span>
+        <span class="line"><span>по стандартам</span></span>
+        <span class="line"><span class="text-sig">дилера</span></span>
+      </h1>
+      <p class="reveal mt-6 max-w-[34rem] text-[16px] leading-relaxed text-bone/70 md:text-[18px]">
+        Техобслуживание, диагностика, ремонт и кузовные работы — в соответствии с предписаниями производителей. Три СТО в Санкт‑Петербурге, консультанты на связи ежедневно с 09:00 до 21:00.
+      </p>
+      <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row">
+        <button data-open class="btn-main group inline-flex items-center justify-center gap-3 rounded-full bg-sig px-7 py-4 font-semibold text-ink transition hover:bg-bone">
+          Записаться онлайн <i data-lucide="arrow-up-right" class="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+        </button>
+        <a href="#" class="glass inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-medium hover:border-sig/60">
+          <i data-lucide="calculator" class="h-4 w-4"></i> Узнать стоимость ремонта
+        </a>
+      </div>
+      <ul class="reveal mt-10 grid max-w-[36rem] grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 text-[13px]">
+        <li class="bg-white/[.03] p-4"><b class="block font-display text-[22px] font-semibold text-bone">1993</b><span class="text-bone/55">обслуживаем автомобили</span></li>
+        <li class="bg-white/[.03] p-4"><b class="block font-display text-[22px] font-semibold text-bone">3 СТО</b><span class="text-bone/55">Энгельса, Хасанская, Руставели</span></li>
+        <li class="bg-white/[.03] p-4"><b class="block font-display text-[22px] font-semibold text-bone">1 500 ₽</b><span class="text-bone/55">замена масла, фикс. цена</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Акция (данные с сайта клиента) -->
+  <aside class="reveal glass absolute bottom-8 right-10 z-10 hidden max-w-[300px] rounded-2xl p-5 lg:block">
+    <p class="text-[11px] uppercase tracking-[.2em] text-sig">Акция</p>
+    <p class="mt-2 text-[15px] leading-snug">Комплексная подготовка автомобиля к зиме</p>
+    <p class="mt-3 font-display text-[28px] font-semibold leading-none">2 499 ₽</p>
+  </aside>
+</div>
+
+<!-- Нижняя панель на телефоне -->
+<div class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-2 bg-ink/85 p-3 pb-[max(.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
+  <a href="tel:+78123261807" class="glass flex items-center justify-center gap-2 rounded-full py-3 text-sm"><i data-lucide="phone" class="h-4 w-4"></i> Позвонить</a>
+  <button data-open class="btn-main rounded-full bg-sig py-3 text-sm font-semibold text-ink">Записаться</button>
+</div>
+
+<!-- Метка концепта -->
+<div class="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[.16em] text-bone/60 md:bottom-4">Концепт редизайна · не официальный сайт</div>
+
+<!-- Модальное окно записи (муляж) -->
+<div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-black/60 p-0 backdrop-blur-sm md:items-center md:p-6" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="w-full max-w-md rounded-t-3xl border border-white/10 bg-deep p-7 pb-[max(1.75rem,env(safe-area-inset-bottom))] md:rounded-3xl">
+    <div class="flex items-start justify-between">
+      <h2 id="mTitle" class="font-display text-2xl font-semibold">Запись на сервис</h2>
+      <button id="mClose" class="grid h-9 w-9 place-items-center rounded-full hover:bg-white/10" aria-label="Закрыть"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+    <div class="mt-4 grid grid-cols-3 gap-2 text-[13px]">
+      <a href="tel:+78123261807" class="glass rounded-xl p-3"><span class="block text-bone/50">Энгельса</span>326-18-07</a>
+      <a href="tel:+78123254042" class="glass rounded-xl p-3"><span class="block text-bone/50">Хасанская</span>325-40-42</a>
+      <a href="tel:+78123725667" class="glass rounded-xl p-3"><span class="block text-bone/50">Руставели</span>372-56-67</a>
+    </div>
+    <form id="form" class="mt-5 space-y-3" novalidate>
+      <select name="sto" class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5" aria-label="Выберите СТО">
+        <option>СТО на Энгельса, 33/1</option><option>СТО на Хасанской, 5</option><option>СТО на Руставели, 25 к. 2</option>
+      </select>
+      <input name="name" required placeholder="Ваше имя" autocomplete="name" class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 placeholder:text-bone/40">
+      <input id="phone" name="phone" required inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 placeholder:text-bone/40">
+      <button class="btn-main w-full rounded-full bg-sig py-4 font-semibold text-ink hover:bg-bone">Отправить заявку</button>
+      <p id="fMsg" class="min-h-5 text-center text-sm text-sig" aria-live="polite"></p>
+      <p class="text-center text-[11px] text-bone/40">Демо: форма никуда не отправляет данные.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ---------- UI: иконки, модалка, маска телефона, версия для слабовидящих ---------- */
+window.lucide && lucide.createIcons();
+const modal = document.getElementById('modal');
+const openM = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(()=>modal.querySelector('input').focus(),50); };
+const closeM = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', openM));
+document.getElementById('mClose').addEventListener('click', closeM);
+modal.addEventListener('click', e => { if (e.target === modal) closeM(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
+
+// Маска: первая 7 или 8 — код страны, учитывается один раз
+const phone = document.getElementById('phone');
+let hasNum = false;
+const fmt = v => {
+  if (v.includes('+7 (')) v = v.replace('+7 (', '');
+  else if (v.startsWith('+7')) v = v.slice(2);
+  let d = v.replace(/\D/g, '');
+  if (!hasNum && (d[0] === '7' || d[0] === '8')) d = d.slice(1);
+  hasNum = d.length > 0;
+  d = d.slice(0, 10);
+  const m = '+7 (___) ___-__-__'.split(''); let i = 0;
+  return d.length ? m.map(c => c === '_' ? (d[i++] ?? '_') : c).join('').replace(/[_\-\s\)\(]*_.*$/, '') : '';
+};
+const toEnd = () => requestAnimationFrame(() => phone.setSelectionRange(phone.value.length, phone.value.length));
+phone.addEventListener('input', () => { phone.value = fmt(phone.value) || '+7 ('; toEnd(); });
+phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7 ('; toEnd(); });
+phone.addEventListener('blur', () => { if (phone.value === '+7 (') phone.value = ''; });
+document.getElementById('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = phone.value.replace(/\D/g,'').length === 11 && e.target.name.value.trim();
+  document.getElementById('fMsg').textContent = ok ? 'Спасибо! В рабочей версии заявка уйдёт на выбранную СТО.' : 'Заполните имя и телефон полностью.';
+});
+document.getElementById('a11yBtn').addEventListener('click', () => document.documentElement.classList.toggle('a11y'));
+
+/* ---------- Анимация текста и фона ---------- */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || location.search.includes('still');
+if (window.gsap && !reduce) {
+  gsap.set('.reveal', { opacity: 0, y: 18 });
+  gsap.timeline({ defaults: { ease: 'power3.out' } })
+    .to('.line>span', { y: 0, duration: 1.05, stagger: .1 }, .15)
+    .to('.reveal', { opacity: 1, y: 0, duration: .9, stagger: .06 }, .35);
+  gsap.to('#g1', { x: '-6vw', y: '5vh', duration: 13, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  gsap.to('#g2', { x: '7vw', y: '-6vh', duration: 16, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  // полосы скорости — проносятся как свет фар
+  document.querySelectorAll('.streak').forEach((s, i) =>
+    gsap.to(s, { x: '180vw', duration: 2.6 + i * .7, repeat: -1, delay: i * .9, repeatDelay: 1.5 + i, ease: 'power2.in' }));
+} else {
+  document.querySelectorAll('.line>span').forEach(s => s.style.transform = 'none');
+}
+</script>
+
+<script type="module">
+/* ---------- 3D: тормозной узел — вентилируемый диск, суппорт, колодки ---------- */
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('stage');
+const isMobile = matchMedia('(max-width: 1023px)').matches;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || location.search.includes('still');
+const SEG = isMobile ? 64 : 128;
+let ready = false;
+const fallbackTimer = setTimeout(() => { if (!ready) document.documentElement.classList.add('no3d'); }, 8000);
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true, powerPreference: 'high-performance' });
+} catch (e) { document.documentElement.classList.add('no3d'); throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = envTex;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+camera.position.set(0, 0, 7);
+const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3, 4, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0xff6a40, 1.6); rim.position.set(-4, 2, -3); scene.add(rim);
+
+// Материалы
+const iron = new THREE.MeshPhysicalMaterial({ color: 0xb8bec5, metalness: .9, roughness: .32, envMapIntensity: 1.4, emissive: 0xff3a10, emissiveIntensity: 0 });
+const ironDark = new THREE.MeshStandardMaterial({ color: 0x3a3f46, metalness: .7, roughness: .55 });
+const hatMat = new THREE.MeshPhysicalMaterial({ color: 0x4a5058, metalness: .7, roughness: .35, clearcoat: .6 });
+const paint = new THREE.MeshPhysicalMaterial({ color: 0xff4d2e, metalness: .2, roughness: .28, clearcoat: 1, clearcoatRoughness: .08 });
+const padMat = new THREE.MeshStandardMaterial({ color: 0x1b1d20, metalness: .3, roughness: .8 });
+const disposables = [iron, ironDark, hatMat, paint, padMat, envTex];
+const add = (geo, mat, parent) => { disposables.push(geo); const m = new THREE.Mesh(geo, mat); parent.add(m); return m; };
+
+const model = new THREE.Group(); scene.add(model);
+const R = 1.5, RI = 0.78, T = 0.07, GAP = 0.1;
+
+// Тормозной диск: две рабочие поверхности с перфорацией + рёбра вентиляции
+const disc = new THREE.Group(); model.add(disc);
+const face = new THREE.Shape(); face.absarc(0, 0, R, 0, Math.PI * 2, false);
+const hole = new THREE.Path(); hole.absarc(0, 0, RI, 0, Math.PI * 2, true); face.holes.push(hole);
+const rows = [1.0, 1.17, 1.34];
+for (let k = 0; k < 12; k++) rows.forEach((r, j) => {
+  const a = (k / 12) * Math.PI * 2 + j * 0.14;
+  const h = new THREE.Path(); h.absarc(Math.cos(a) * r, Math.sin(a) * r, 0.045, 0, Math.PI * 2, true); face.holes.push(h);
+});
+const faceGeo = new THREE.ExtrudeGeometry(face, { depth: T, bevelEnabled: true, bevelThickness: .01, bevelSize: .01, bevelSegments: 2, curveSegments: SEG / 2 });
+add(faceGeo, iron, disc).position.z = GAP / 2;
+add(faceGeo, iron, disc).position.z = -GAP / 2 - T;
+const vaneGeo = new THREE.BoxGeometry(R - RI - .06, .035, GAP);
+for (let k = 0; k < (isMobile ? 24 : 36); k++) {
+  const a = (k / (isMobile ? 24 : 36)) * Math.PI * 2;
+  const v = add(vaneGeo, ironDark, disc);
+  v.position.set(Math.cos(a) * (R + RI) / 2, Math.sin(a) * (R + RI) / 2, 0); v.rotation.z = a + .35;
+}
+// Ступица («колокол») с отверстиями под болты
+const hat = new THREE.Group(); disc.add(hat);
+const hp = [[0,.36],[.5,.36],[.6,.34],[.66,.26],[.68,0],[.8,-.02],[.82,-.06],[0,-.06]].map(p => new THREE.Vector2(p[0], p[1]));
+const hatGeo = new THREE.LatheGeometry(hp, SEG); hatGeo.rotateX(Math.PI / 2);
+add(hatGeo, hatMat, hat);
+const boltGeo = new THREE.CylinderGeometry(.055, .055, .05, 16); boltGeo.rotateX(Math.PI / 2);
+for (let k = 0; k < 5; k++) { const a = k / 5 * Math.PI * 2; add(boltGeo, ironDark, hat).position.set(Math.cos(a) * .32, Math.sin(a) * .32, .37); }
+add(new THREE.CylinderGeometry(.14, .14, .06, 32).rotateX(Math.PI / 2), ironDark, hat).position.z = .37;
+
+// Суппорт: дуга с фасками, обхватывает диск сверху справа
+const cal = new THREE.Group(); model.add(cal);
+const A0 = 0.32, A1 = 1.08, CR0 = 1.16, CR1 = 1.7;
+const cs = new THREE.Shape();
+cs.absarc(0, 0, CR1, A0, A1, false); cs.absarc(0, 0, CR0, A1, A0, true);
+const calGeo = new THREE.ExtrudeGeometry(cs, { depth: .2, bevelEnabled: true, bevelThickness: .08, bevelSize: .07, bevelSegments: 4, curveSegments: 32 });
+const calF = add(calGeo, paint, cal); calF.position.z = GAP / 2 + T + .06;
+const calB = add(calGeo, paint, cal); calB.position.z = -GAP / 2 - T - .26;
+// мост над диском
+const bridge = new THREE.Shape(); bridge.absarc(0, 0, CR1 + .02, A0 + .12, A1 - .12, false); bridge.absarc(0, 0, R + .06, A1 - .12, A0 + .12, true);
+add(new THREE.ExtrudeGeometry(bridge, { depth: GAP + 2 * T + .32, bevelEnabled: true, bevelThickness: .04, bevelSize: .04, bevelSegments: 3, curveSegments: 24 }), paint, cal).position.z = -(GAP / 2 + T + .16);
+// колодки
+const pads = new THREE.Group(); model.add(pads);
+const ps = new THREE.Shape(); ps.absarc(0, 0, R - .04, A0 + .08, A1 - .08, false); ps.absarc(0, 0, R - .42, A1 - .08, A0 + .08, true);
+const padGeo = new THREE.ExtrudeGeometry(ps, { depth: .05, bevelEnabled: false, curveSegments: 24 });
+const padF = add(padGeo, padMat, pads); padF.position.z = GAP / 2 + T + .005;
+const padB = add(padGeo, padMat, pads); padB.position.z = -GAP / 2 - T - .055;
+
+model.rotation.set(0.15, -0.55, 0);
+const baseY = isMobile ? 0 : 0.05;
+model.position.y = baseY;
+
+// Подписи
+const tags = {}; document.querySelectorAll('.tag').forEach(t => tags[t.dataset.k] = t);
+if (isMobile) tags.pad.textContent = 'Колодки';
+const mid = (A0 + A1) / 2;
+const anchors = {
+  cal: [new THREE.Vector3(Math.cos(mid) * 1.75, Math.sin(mid) * 1.75, .3), model],
+  pad: [new THREE.Vector3(Math.cos(A0) * 1.3, Math.sin(A0) * 1.3 - .05, .15), model],
+  disc: [new THREE.Vector3(Math.cos(3.9) * 1.5, Math.sin(3.9) * 1.5, .1), model]
+};
+const vv = new THREE.Vector3();
+function placeTags() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  for (const k in anchors) {
+    const [p, obj] = anchors[k];
+    vv.copy(p); obj.localToWorld(vv); vv.project(camera);
+    let x = (vv.x * .5 + .5) * w + 14, y = (-vv.y * .5 + .5) * h - 14;
+    x = Math.min(x, w - tags[k].offsetWidth - 6);
+    tags[k].style.transform = `translate(${x}px, ${y}px)`;
+  }
+}
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.position.z = isMobile ? 8.4 : (w / h < 0.8 ? 9.4 : 8.4);
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+const mouse = { x: 0, y: 0 };
+addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - .5; mouse.y = e.clientY / innerHeight - .5; });
+
+// Сборка: диск влетает и раскручивается, суппорт садится, колодки сжимают — диск краснеет от нагрева
+const spin = { v: reduce ? 0 : 0.35 };
+if (window.gsap && !reduce) {
+  disc.position.x = 4.5; disc.rotation.z = -Math.PI * 4;
+  cal.position.set(1.6, 3.2, 0); cal.scale.setScalar(.001);
+  padF.position.z += .35; padB.position.z -= .35; pads.scale.setScalar(.001);
+  gsap.timeline({ delay: .3, defaults: { ease: 'power3.out' } })
+    .to(disc.position, { x: 0, duration: 1.6 }, 0)
+    .to(disc.rotation, { z: 0, duration: 1.8, ease: 'power2.out' }, 0)
+    .to(cal.scale, { x: 1, y: 1, z: 1, duration: .5 }, 1.2)
+    .to(cal.position, { x: 0, y: 0, duration: 1, ease: 'expo.out' }, 1.2)
+    .to(pads.scale, { x: 1, y: 1, z: 1, duration: .3 }, 1.6)
+    .to(padF.position, { z: GAP / 2 + T + .005, duration: .35, ease: 'power4.in' }, 2.0)
+    .to(padB.position, { z: -GAP / 2 - T - .055, duration: .35, ease: 'power4.in' }, 2.0)
+    .to(iron, { emissiveIntensity: .55, duration: .4 }, 2.3)
+    .to(spin, { v: 2.2, duration: .01 }, 1.6)
+    .to(spin, { v: .12, duration: 1.4, ease: 'power3.out' }, 2.3)
+    .to(iron, { emissiveIntensity: 0, duration: 2.2, ease: 'sine.out' }, 2.8)
+    .to('.tag', { opacity: 1, duration: .6, stagger: .12 }, 2.7);
+} else {
+  document.querySelectorAll('.tag').forEach(t => t.style.opacity = 1);
+}
+
+let visible = true, raf = 0;
+new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) loop(); }).observe(canvas);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !raf) loop(); });
+const clock = new THREE.Clock();
+function loop() {
+  if (!visible || document.hidden) { raf = 0; return; }
+  raf = requestAnimationFrame(loop);
+  const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+  disc.rotation.z -= spin.v * dt;
+  model.rotation.y += ((-0.55 + Math.sin(t * .22) * .25 + mouse.x * .5) - model.rotation.y) * .04;
+  model.rotation.x += ((0.15 + mouse.y * .25) - model.rotation.x) * .04;
+  if (!reduce) model.position.y += (baseY + Math.sin(t * .8) * .04 - model.position.y) * .05;
+  renderer.render(scene, camera);
+  placeTags();
+  if (!ready) { ready = true; clearTimeout(fallbackTimer); }
+}
+loop();
+
+addEventListener('pagehide', () => {
+  cancelAnimationFrame(raf);
+  disposables.forEach(d => d.dispose && d.dispose());
+  pmrem.dispose(); renderer.dispose();
+});
+</script>
+</body>
+</html>
