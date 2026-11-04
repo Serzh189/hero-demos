@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Авто Премиум — было / стало</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100svh;background:#0a0b0d;color:#f2f0ec;font:16px/1.5 "Manrope",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(60vmax 50vmax at 10% -10%,#ff4d2e22,transparent),radial-gradient(50vmax 40vmax at 100% 100%,#9aa3ad1f,transparent)}
+  .wrap{max-width:1320px;margin:0 auto;padding:clamp(20px,4vw,48px) clamp(16px,4vw,40px) 40px}
+  .eyebrow{display:inline-block;border:1px solid #ff4d2e66;color:#ff6a4d;border-radius:99px;padding:6px 14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+  h1{font-family:"Unbounded",system-ui,sans-serif;font-weight:600;font-size:clamp(28px,4.4vw,56px);line-height:1.05;text-transform:uppercase;letter-spacing:-.01em;margin:18px 0 10px}
+  h1 i{color:#ff4d2e;font-style:normal}
+  .lead{color:#f2f0ecaa;max-width:46rem;margin:0 0 28px}
+  /* Сравнение */
+  .cmp{position:relative;width:100%;aspect-ratio:1900/861;border-radius:18px;overflow:hidden;border:1px solid #ffffff1a;box-shadow:0 40px 80px -30px #000;user-select:none;touch-action:pan-y;cursor:ew-resize;background:#111}
+  .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;display:block}
+  .after{clip-path:inset(0 0 0 var(--p,50%))}
+  .bar{position:absolute;top:0;bottom:0;left:var(--p,50%);width:2px;margin-left:-1px;background:#f2f0ec;pointer-events:none}
+  .knob{position:absolute;top:50%;left:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#f2f0ec;color:#0a0b0d;display:grid;place-items:center;box-shadow:0 8px 24px #0008;font-weight:700;letter-spacing:-2px}
+  .lbl{position:absolute;top:14px;padding:6px 12px;border-radius:99px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:#000a;backdrop-filter:blur(8px);pointer-events:none}
+  .lbl.l{left:14px}.lbl.r{right:14px;background:#ff4d2e;color:#fff}
+  input[type=range]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+  input[type=range]:focus-visible + .bar .knob{outline:3px solid #ff4d2e;outline-offset:3px}
+  .hint{margin:14px 0 0;color:#f2f0ec66;font-size:13px;text-align:center}
+  /* Список разницы */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:32px 0}
+  .card{border:1px solid #ffffff14;background:#ffffff08;border-radius:16px;padding:18px}
+  .card b{display:block;font-family:"Unbounded",system-ui,sans-serif;font-weight:500;font-size:18px;margin-bottom:8px;margin-bottom:4px;color:#f2f0ec}
+  .card span{color:#f2f0ec99;font-size:14px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;border-radius:99px;padding:15px 26px;font-weight:600;text-decoration:none}
+  .btn.main{background:#ff4d2e;color:#fff}.btn.main:hover{background:#ff6a4d}
+  .btn.ghost{border:1px solid #ffffff22;color:#f2f0ec}
+  .meta{color:#f2f0ec55;font-size:12px;margin-top:28px}
+  a:focus-visible{outline:2px solid #ff4d2e;outline-offset:3px}
+  @media (max-width:640px){.lbl{font-size:10px;top:8px}.lbl.l{left:8px}.lbl.r{right:8px}.knob{width:40px;height:40px;margin:-20px 0 0 -20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">Концепт для «Авто Премиум»</span>
+  <h1>Первый экран: <i>сейчас</i> и в концепте</h1>
+  <p class="lead">Потяните ползунок. Слева — ваш сайт сегодня, справа — каким может быть первый экран, который владелец машины видит в первые 3 секунды.</p>
+
+  <div class="cmp" id="cmp" style="--p:50%">
+    <img src="../before.jpg" alt="Текущий первый экран сайта autoservice-ap.ru" width="1900" height="861">
+    <img src="../after.jpg" class="after" alt="Концепт нового первого экрана «Авто Премиум»" width="1900" height="861">
+    <span class="lbl l">Сейчас</span><span class="lbl r">Концепт</span>
+    <input type="range" id="rng" min="0" max="100" value="50" step="0.5" aria-label="Положение ползунка сравнения">
+    <div class="bar"><div class="knob" aria-hidden="true">‹ ›</div></div>
+  </div>
+  <p class="hint">Перетащите ползунок или используйте стрелки клавиатуры</p>
+
+  <div class="grid">
+    <div class="card"><b>Одно главное</b><span>Сразу понятно, кто вы: сервис любых марок по стандартам дилера. Вместо слайдера из 8 акций — одна актуальная.</span></div>
+    <div class="card"><b>3D-тормоза</b><span>Живая деталь собирается на глазах: диск, суппорт, колодки. Запоминается сильнее стоковой картинки.</span></div>
+    <div class="card"><b>Цифры доверия</b><span>С 1993 года, 3 СТО с адресами, фиксированная цена замены масла — видно без прокрутки.</span></div>
+    <div class="card"><b>Запись и звонок</b><span>Телефон в шапке, форма с выбором СТО, на телефоне — кнопки «Позвонить» и «Записаться» внизу.</span></div>
+  </div>
+
+  <div class="cta">
+    <a class="btn main" href="../">Открыть живую версию →</a>
+    <span style="color:#f2f0ec88;font-size:14px">Внедрение первого экрана на ваш сайт — 15 000 ₽, 2–3 рабочих дня.</span>
+  </div>
+
+  <p class="meta">Скриншот текущего сайта сделан 04.11.2026. Концепт редизайна, не официальный сайт компании. Товарные знаки Eurorepar принадлежат их владельцам. Подготовил Сергей Лысенко.</p>
+</div>
+
+<script>
+const cmp = document.getElementById('cmp'), rng = document.getElementById('rng');
+const set = v => { v = Math.max(0, Math.min(100, v)); cmp.style.setProperty('--p', v + '%'); rng.value = v; };
+rng.addEventListener('input', () => { stopIntro(); set(+rng.value); });
+// перетаскивание мышью и пальцем по всей картинке
+let drag = false;
+const fromEvent = e => { const r = cmp.getBoundingClientRect(); set((e.clientX - r.left) / r.width * 100); };
+cmp.addEventListener('pointerdown', e => { drag = true; stopIntro(); fromEvent(e); });
+addEventListener('pointermove', e => drag && fromEvent(e));
+addEventListener('pointerup', () => drag = false);
+
+// вступительная анимация: ползунок «показывает» обе стороны
+let raf = 0, stopped = false;
+function stopIntro(){ stopped = true; cancelAnimationFrame(raf); }
+const keys = [[0,50],[900,18],[1900,82],[2900,50]];
+const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+function intro(t0){
+  raf = requestAnimationFrame(function step(now){
+    if (stopped) return;
+    const t = now - t0;
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) { const [a, va] = keys[i-1], [b, vb] = keys[i]; set(va + (vb - va) * ease((t - a) / (b - a))); raf = requestAnimationFrame(step); return; }
+    }
+    set(50);
+  });
+}
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const go = () => setTimeout(() => !stopped && intro(performance.now()), 600);
+  const imgs = [...cmp.querySelectorAll('img')];
+  Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => i.onload = i.onerror = r))).then(go);
+}
+</script>
+</body>
+</html>
