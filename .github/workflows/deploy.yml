@@ -1,0 +1,37 @@
+# Автодеплой hero-demos: каждый push в main → выкладка на Timeweb (App Platform, приложение 282717).
+# Нужен секрет репозитория TIMEWEB_TOKEN (Timeweb → API и Terraform → «Добавить токен»).
+name: Deploy to Timeweb
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: timeweb-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      TIMEWEB_TOKEN: ${{ secrets.TIMEWEB_TOKEN }}
+      APP_ID: "282717"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Проверка файлов
+        run: |
+          test -s index.html || { echo "::error::нет index.html"; exit 1; }
+          bad=$(find . \( -path ./.git -o -path ./.github \) -prune -o -type f \( -name '*.md' -o -name '*.py' -o -name '*.ps1' -o -name '*.bak' \) -print)
+          if [ -n "$bad" ]; then echo "::error::служебные файлы в репозитории: $bad"; exit 1; fi
+      - name: Запуск деплоя на Timeweb
+        run: |
+          if [ -z "$TIMEWEB_TOKEN" ]; then
+            echo "::warning::Секрет TIMEWEB_TOKEN не задан — деплой пропущен"; exit 0
+          fi
+          code=$(curl -sS -o resp.json -w '%{http_code}' -X POST \
+            "https://timeweb.cloud/api/v1/apps/$APP_ID/deploy" \
+            -H "Authorization: Bearer $TIMEWEB_TOKEN" -H 'Content-Type: application/json' \
+            -d "{\"commit_sha\":\"$GITHUB_SHA\"}")
+          echo "HTTP $code"; head -c 600 resp.json; echo
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then echo "::error::Timeweb ответил $code"; exit 1; fi
